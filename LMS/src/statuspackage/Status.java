@@ -1,18 +1,19 @@
 package statuspackage;
 
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import java.awt.Font;
-import java.sql.DriverManager;
 import java.awt.Color;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import java.sql.*;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.*;
 
 public class Status {
 
@@ -23,6 +24,7 @@ public class Status {
 	private DefaultTableModel model_ov;
 	private Object[] columns = {"Book ID","Book Title","Student ID","Student Name","Student email","Issue Date","Return Date"};
 	private Connection conn;
+	private JTextField id;
 
 	/**
 	 * Launch the application.
@@ -98,6 +100,48 @@ public class Status {
 		//model_ov.addRow(new Object[]{1,2,3,4,5,6,7});
 		scrollPane_1.setViewportView(ov);
 		
+		id = new JTextField();
+		id.setBackground(new Color(255, 255, 204));
+		id.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		id.setBounds(436, 76, 158, 32);
+		frame.getContentPane().add(id);
+		id.setColumns(10);
+		
+		JLabel lblNewLabel_3 = new JLabel("Student ID:");
+		lblNewLabel_3.setFont(new Font("Times New Roman", Font.BOLD, 19));
+		lblNewLabel_3.setBounds(324, 76, 102, 32);
+		frame.getContentPane().add(lblNewLabel_3);
+		
+		JButton search = new JButton("Search");
+		search.setBackground(Color.LIGHT_GRAY);
+		search.setFont(new Font("Tahoma", Font.BOLD, 15));
+		search.setBounds(604, 76, 85, 32);
+		
+		search.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fetchByID();
+			}
+		});
+		
+		frame.getContentPane().add(search);
+		
+		JButton refresh = new JButton("Refresh");
+		refresh.setBackground(Color.LIGHT_GRAY);
+		refresh.setFont(new Font("Tahoma", Font.BOLD, 15));
+		refresh.setBounds(699, 76, 102, 32);
+		
+		refresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int rc = model_all.getRowCount();
+				for(int i = rc-1;i>=0;i--) {
+					model_all.removeRow(i);
+				}
+				showAll();
+			}
+		});
+		
+		frame.getContentPane().add(refresh);
+		
 		showAll();
 		showDefaulters();
 		
@@ -141,6 +185,35 @@ public class Status {
 				row[5] = rs.getString("bs.i_date");
 				row[6] = rs.getString("bs.r_date");
 				model_ov.addRow(row);
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Bullshit errors: "+e.getMessage());
+		}
+	}
+	public void fetchByID() {
+		Object row[] = new Object[7];
+		try {
+			
+			String query = "select b.id,b.title,s.id,s.name,s.email,bs.i_date,bs.r_date from book_student bs inner join student s on s.id = bs.s_id inner join books b on b.id = bs.b_id where s.id='"+id.getText()+"' order by bs.r_date";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			//stmt.setString(1,"10");
+			ResultSet rs =stmt.executeQuery(query);
+			
+			int rc = model_all.getRowCount();
+			for(int i = rc-1;i>=0;i--) {
+				model_all.removeRow(i);
+			}
+			
+			while (rs.next()) {
+				row[0] = rs.getString("b.id");
+				row[1] = rs.getString("b.title");
+				row[2] = rs.getString("s.id");
+				row[3] = rs.getString("s.name");
+				row[4] = rs.getString("s.email");
+				row[5] = rs.getString("bs.i_date");
+				row[6] = rs.getString("bs.r_date");
+				model_all.addRow(row);
 			}
 		}
 		catch(Exception e) {
