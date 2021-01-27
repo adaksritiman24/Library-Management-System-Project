@@ -44,11 +44,11 @@ Functinality to return a book to the Library, Enter the book Id and click "Searc
 
 ### Status
 This functionality helps to view issue details of all the currently issued books from the Library.
-* The first table shows issue details of all the books currently issued.
+* The first table shows issue details of all the books currently issued. One can also serch the issue details of any particular student by their ID. 
 * The second table shows the book issue details of all such books, where the student(who is currently having the book) has not yet returned the book even after his/her deadline for returning that book has passed. 
 * Once a book is returned, the issue details will be removed from the tables 
 
-![6](https://user-images.githubusercontent.com/53531220/105802317-e5e0b300-5fc0-11eb-9bcb-bc3595464196.JPG)
+![6](https://user-images.githubusercontent.com/53531220/105982008-bf07a700-60bc-11eb-8e6d-6a80c8241105.JPG)
 
 
 ## Tools used
